@@ -3,10 +3,12 @@ import {sendRequest}  from "../request/requestHandler.js"
 // start listening to user events
 function startListnening() {
     document.addEventListener("DOMContentLoaded",function () {
-        const noliten = ["script"]
+        const nofollow= ["script"]
+        const doFollow = ["a","button"]
         let body = document.querySelectorAll("body *")
         body.forEach(node => {
-             if(noliten.indexOf(node.tagName.toLocaleLowerCase()) <= -1) {
+             if(nofollow.indexOf(node.tagName.toLocaleLowerCase()) <= -1 && 
+             doFollow.indexOf(node.tagName.toLocaleLowerCase()) >= 0) {
                 // console.log(node.tagName.toLocaleLowerCase() )
                 addListeners(node)
              }
