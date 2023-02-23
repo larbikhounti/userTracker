@@ -5,6 +5,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
+        *{
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
         #smTracker{
             display: flex;
             justify-content: center;
@@ -13,7 +16,15 @@
             box-shadow: 0 20px 68px rgba(0, 0, 0, 0.55);
             width: -moz-fit-content;
             width: fit-content;   
-           
+            border-radius: 4px;
+            font-size: 13px;
+            z-index: 999999;
+            position: absolute;
+            scroll-behavior: smooth;
+            overflow-y:scroll;
+            height: 105px;
+            padding: 5px;
+             
         }
         #smList{
            
@@ -27,52 +38,89 @@
         .smValue{
             color: #fded02;
         }
+        
+
+        #tooltip {
+            background-color: #333;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+
+
     </style>
     <title>Document</title>
 </head>
 <body>
-    <button class="main-button-class"  
-    >
-        click me
-        
+   
+    <button class="main-button-class2">click me 
     </button><br>
     <br>
     <br>
-    <button class="main-button-class2"  
-    >
-        click me
-        
+    <br>
+    <br>
+    <br>
+    <button class="main-button-class">click me 
     </button>
+    
   
   
    
 
-    <script src="../library/popper.min.js"></script>
-    <script src="../library/tippy-bundle.umd.min.js"></script>
+    <!-- Development version -->
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+  
     <script  type="module" src="./js/index.js"></script>
     <script>
-        let classes= ["main-button-class2","main-button-class"]
-        // With the above scripts loaded, you can call `tippy()` with a CSS
-        // selector and a `content` prop:
-        // Creating the dynamic template
+    
+    fetch("http://127.0.0.1:3000/sendData", {
+        method: 'GET'
+        }).then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+    return response.json();
+        }).then(data => {
         
-        classes.forEach(element => {
-            const myTemplate = document.createElement('div');
-        myTemplate.innerHTML = `
-        <div id="smTracker">
-        <ul id="smList">
-            <li class="smValue"><span class="smKey">clicked on </span>2023/22/02 at 5:36</li>
-         </ul>
-        </div>
-        `
-            tippy('.'+element, {
-            content : myTemplate ,
-             allowHTML: true,
-            showOnCreate: true,
-            sticky: true,
-        
-            });
-        });
+        smrenderData(data)
+    }).catch(error => {
+        console.error('There was a problem with the fetch operation:', error);
+    });
+        function smrenderData(data) {
+            data.forEach(smEventObject => {
+                //console.log(smEventObject.date)
+            let smDate = smEventObject.date;
+           
+                if(document.querySelector("#smTracker")){
+                      
+
+                    let smLi = document.createElement("li");
+                    smLi.className = "smValue"
+                    smLi.innerHTML =`<span class="smKey">${smEventObject.actionType} :</span>${smDate[0]}/${smDate[1]}/${smDate[2]}
+                        at ${smDate[3]}:${smDate[4]}:${smDate[5]}`
+
+                    document.querySelector("#smList").append(smLi)
+                    
+                }else{
+                    
+                    const myTemplate = document.createElement('div');
+                    myTemplate.innerHTML = `
+                    <div id="smTracker">
+                    <ul id="smList">
+                        <li class="smValue"><span class="smKey">${smEventObject.actionType} :</span>${smDate[0]}/${smDate[1]}/${smDate[2]}
+                        at ${smDate[3]}:${smDate[4]}:${smDate[5]}</li>
+                    </ul>
+                    </div>`
+                    console.log(smEventObject)
+                    let smElement = document.querySelector(`.${smEventObject.tagName}`)
+                    smElement.append(myTemplate)
+                }
+                
+             });
+        }
+       
+      
        
        
       
