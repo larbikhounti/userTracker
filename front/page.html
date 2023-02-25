@@ -8,45 +8,37 @@
         *{
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        #smTracker{
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #151718!important;
-            box-shadow: 0 20px 68px rgba(0, 0, 0, 0.55);
-            width: -moz-fit-content;
-            width: fit-content;   
-            border-radius: 4px;
-            font-size: 13px;
-            z-index: 999999;
-            position: absolute;
-            scroll-behavior: smooth;
-            overflow-y:scroll;
-            height: 105px;
-            padding: 5px;
-             
-        }
-        #smList{
-           
-            list-style: none;
-            margin: 0;
-            padding: 10px;
-        }
-        .smKey{
-            color: #01a252;
-        }
-        .smValue{
-            color: #fded02;
-        }
-        
+        #smTracker {
+  background-color: #333333;
+  border-radius: 10px;
+  color: #FFFFFF;
+  font-family: Arial, sans-serif;
+  padding: 10px;
+  margin-bottom: 20px;
+  width: fit-content;
+}
 
-        #tooltip {
-            background-color: #333;
-            color: white;
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-size: 13px;
-        }
+#smList {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.smValue {
+  margin: 10px 0;
+  font-size: 14px;
+}
+
+.smKey {
+  font-weight: bold;
+}
+
+.smValue span {
+  color: #FFD700;
+}
+
+
+
 
 
     </style>
@@ -54,7 +46,7 @@
 </head>
 <body>
    
-    <button class="main-button-class2">click me 
+    <button id="main-button-class2">click me 
     </button><br>
     <br>
     <br>
@@ -73,57 +65,56 @@
   
     <script  type="module" src="./js/index.js"></script>
     <script>
-    
-    fetch("http://127.0.0.1:3000/sendData", {
-        method: 'GET'
-        }).then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
+   // Make a GET request to the specified URL to fetch data
+fetch("http://127.0.0.1:3000/sendData", {
+    method: 'GET'
+}).then(response => {
+    // Check if the response is not OK, and throw an error if so
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+    // Parse the response as JSON and return it
     return response.json();
-        }).then(data => {
+}).then(data => {
+    // Call the smrenderData function and pass the data as an argument
+    smrenderData(data)
+}).catch(error => {
+    // Handle any errors that occur during the fetch operation
+    console.error('There was a problem with the fetch operation:', error);
+});
+
+// Function to render the data received from the fetch request
+function smrenderData(data) {
+    console.log(data) // Log the received data to the console
+    data.forEach(smEventObject => {
+        let smDate = smEventObject.date; // Extract the date from the current event object
+        // Check if an element with the current event object's tag name already exists in the DOM
         
-        smrenderData(data)
-    }).catch(error => {
-        console.error('There was a problem with the fetch operation:', error);
-    });
-        function smrenderData(data) {
-            data.forEach(smEventObject => {
-                //console.log(smEventObject.date)
-            let smDate = smEventObject.date;
-           
-                if(document.querySelector("#smTracker")){
-                      
-
-                    let smLi = document.createElement("li");
-                    smLi.className = "smValue"
-                    smLi.innerHTML =`<span class="smKey">${smEventObject.actionType} :</span>${smDate[0]}/${smDate[1]}/${smDate[2]}
-                        at ${smDate[3]}:${smDate[4]}:${smDate[5]}`
-
-                    document.querySelector("#smList").append(smLi)
-                    
-                }else{
-                    
-                    const myTemplate = document.createElement('div');
-                    myTemplate.innerHTML = `
-                    <div id="smTracker">
-                    <ul id="smList">
-                        <li class="smValue"><span class="smKey">${smEventObject.actionType} :</span>${smDate[0]}/${smDate[1]}/${smDate[2]}
-                        at ${smDate[3]}:${smDate[4]}:${smDate[5]}</li>
-                    </ul>
-                    </div>`
-                    console.log(smEventObject)
-                    let smElement = document.querySelector(`.${smEventObject.tagName}`)
-                    smElement.append(myTemplate)
-                }
-                
-             });
+        if (document.querySelector(`[classValue="${smEventObject.tagName}"]`)) {
+            // If the element exists, create a new <li> element to hold the event data
+            let smLi = document.createElement("li");
+            smLi.className = "smValue"
+            smLi.innerHTML = `<span class="smKey">${smEventObject.actionType} :</span>${smDate[0]}/${smDate[1]}/${smDate[2]} at ${smDate[3]}:${smDate[4]}:${smDate[5]}`;
+            // Append the <li> element to the <ul> element with the id "smList" inside the existing element
+            document.querySelector(`${smEventObject.tagName} #smList`).append(smLi);
+        } else {
+            // If the element does not exist, create a new <div> element to hold the event data
+            const myTemplate = document.createElement('div');
+            myTemplate.innerHTML = `
+            <div id="smTracker" classValue="${smEventObject.tagName}">
+                <ul id="smList">
+                    <li class="smValue"><span class="smKey">${smEventObject.actionType} :</span>${smDate[0]}/${smDate[1]}/${smDate[2]} at ${smDate[3]}:${smDate[4]}:${smDate[5]}</li>
+                </ul>
+            </div>`;
+            // Find the first element with either the current event object's tag name as a class or as an id and insert the new <div> element after it
+          //  let smElement = document.querySelector(`.${smEventObject.tagName}, #${smEventObject.tagName}`);
+          console.log(smEventObject.tagName)
+          smElement = document.querySelector(smEventObject.tagName);
+            smElement.after(myTemplate);
         }
-       
-      
-       
-       
-      
+    });
+}
+
       </script>
     
  
