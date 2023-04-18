@@ -1,20 +1,13 @@
-// main
+// Import the `startListnening` function from './events/eventListners.js'
 import {startListnening} from './events/eventListners.js'
-startListnening()
-
-/*
-data = {
-    startDate : [year,day,month,hour,minute,second],
-    path : "/example.com/something"
-    client uui : "f4gd-df54-fg48d-gf4d",
-
-}
-data = {
-    client uui : string
-    tagName, string
-    actionType : "string"
-    date : array(int)
+import  {setCookies} from './cookies/cookiesHandler.js'
+// Define a function `setTrackingUserId` that takes a `userId` parameter
+function setTrackingUserId(userId) {
+    // Set a cookie with name `trackingUserId` and value `userId`, to be expired never and to be valid for the entire site
+    setCookies("trackingUserId",userId)
+    // Call the `startListnening` function to start listening for events
+    startListnening()
 }
 
-
-*/ 
+// Export the `setTrackingUserId` function
+export {setTrackingUserId}

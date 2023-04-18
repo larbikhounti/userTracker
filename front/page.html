@@ -63,7 +63,12 @@
     <!-- Development version -->
     <script src="https://unpkg.com/@popperjs/core@2"></script>
   
-    <script  type="module" src="./js/index.js"></script>
+    <script type="module">
+        import { setTrackingUserId } from './js/index.js';
+        setTrackingUserId("userfsdfds123"); // generated in your admin panel
+      </script>
+ 
+   
     <script>
    // Make a GET request to the specified URL to fetch data
 fetch("http://127.0.0.1:3000/sendData", {
@@ -83,37 +88,6 @@ fetch("http://127.0.0.1:3000/sendData", {
     console.error('There was a problem with the fetch operation:', error);
 });
 
-// Function to render the data received from the fetch request
-function smrenderData(data) {
-    console.log(data) // Log the received data to the console
-    data.forEach(smEventObject => {
-        let smDate = smEventObject.date; // Extract the date from the current event object
-        // Check if an element with the current event object's tag name already exists in the DOM
-        
-        if (document.querySelector(`[classValue="${smEventObject.tagName}"]`)) {
-            // If the element exists, create a new <li> element to hold the event data
-            let smLi = document.createElement("li");
-            smLi.className = "smValue"
-            smLi.innerHTML = `<span class="smKey">${smEventObject.actionType} :</span>${smDate[0]}/${smDate[1]}/${smDate[2]} at ${smDate[3]}:${smDate[4]}:${smDate[5]}`;
-            // Append the <li> element to the <ul> element with the id "smList" inside the existing element
-            document.querySelector(`${smEventObject.tagName} #smList`).append(smLi);
-        } else {
-            // If the element does not exist, create a new <div> element to hold the event data
-            const myTemplate = document.createElement('div');
-            myTemplate.innerHTML = `
-            <div id="smTracker" classValue="${smEventObject.tagName}">
-                <ul id="smList">
-                    <li class="smValue"><span class="smKey">${smEventObject.actionType} :</span>${smDate[0]}/${smDate[1]}/${smDate[2]} at ${smDate[3]}:${smDate[4]}:${smDate[5]}</li>
-                </ul>
-            </div>`;
-            // Find the first element with either the current event object's tag name as a class or as an id and insert the new <div> element after it
-          //  let smElement = document.querySelector(`.${smEventObject.tagName}, #${smEventObject.tagName}`);
-          console.log(smEventObject.tagName)
-          smElement = document.querySelector(smEventObject.tagName);
-            smElement.after(myTemplate);
-        }
-    });
-}
 
       </script>
     
